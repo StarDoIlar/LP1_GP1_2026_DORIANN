@@ -8,43 +8,46 @@ import Interface.IUsuario;
 import models.Persona;
 import models.Usuario;
 
+/**
+ *
+ * @author LAB 2
+ */
 public class TestPersona {
+
     IPersona dao = new PersonaDaoImpl();
-    IUsuario udao = new UsuarioDaoImpl();
-    
-    public static void main(String[]args){
- 
-        TestPersona test = new TestPersona();
-        test.crear_usuario();
-        //test.validate();
+    IUsuario Udao = new UsuarioDaoImpl();
+
+    public static void main(String[] args) {
+        TestPersona t = new TestPersona();
+       // t.crear_usuario();
+       t.validate();
     }
 
     public void crear_usuario() {
         Persona p = new Persona();
-        p.setNombre("Doriann Gonzales");
-        p.setEmail("dorianngonzales123@gmail.com");
-        p.setTelefono("984371752");
+        p.setNombre("Jhan Arly");
+        p.setEmail("jhan@gmail.com");
         p.setDireccion("upeu");
-        
+        p.setTelefono("987654321");
         Usuario u = new Usuario();
         u.setPassword("admin123");
-        
         int result = dao.insertar(p, u);
-        
         if (result > 0) {
-            System.out.println("Usuario: " + p.getEmail());
-            System.out.println("Rol: " + u.getRol());
+            System.out.println("Usuario" + p.getEmail());
+            System.out.println("Rol" + u.getRol());
         } else {
-            System.out.println("No se realizó el registro");
+            System.out.println("No se realizo el registro");
         }
     }
+    
     public void validate(){
-        Usuario u = udao.validate("dorianngonzales123@gmail.com", "admin123");
-        if (u != null && u.getPersona() != null) {
-            System.out.println("Bienvenido" +u.getPersona().getNombre());
-            System.out.println("Rol "+u.getRol());
-        } else {
-            System.out.println("Credenciales incorrectas");
+        Usuario u =Udao.validate("jhan@gmail.com", "admin123");
+        if (u !=null && u.getPersona() !=null) {
+            System.out.println("Bienvenido"+u.getPersona().getNombre());
+            System.out.println("Rol"+ u.getRol());
+        }else{
+            System.out.println("credenciales incorrectas");
         }
     }
+
 }
