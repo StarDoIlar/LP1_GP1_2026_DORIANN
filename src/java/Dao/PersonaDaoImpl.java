@@ -4,21 +4,21 @@ package Dao;
 import Interface.IPersona;
 import java.sql.*;
 import java.util.List;
-import models.persona;
+import models.Persona;
+import models.Usuario;
 import models.rol;
-import models.usuario;
 import util.ConexionSingleton;
 
 public class PersonaDaoImpl implements IPersona{
     private Connection cn;
 
     @Override
-    public List<persona> lista() {
+    public List<Persona> lista() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public int insertar(persona p, usuario u) {
+    public int insertar(Persona p, Usuario u) {
         PreparedStatement st;
         String query = null;
         ResultSet rs;
@@ -31,8 +31,8 @@ public class PersonaDaoImpl implements IPersona{
             st = cn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
             st.setString(1, p.getNombre());
             st.setString(2, p.getEmail());
-            st.setString(3, p.getDireccion());
-            st.setString(4, p.getTelefono());
+            st.setString(3, p.getTelefono());
+            st.setString(4, p.getDireccion());
             r = st.executeUpdate();
             if (r != 0) {
                 rs = st.getGeneratedKeys();
@@ -74,12 +74,12 @@ public class PersonaDaoImpl implements IPersona{
     }
 
     @Override
-    public boolean update(persona p) {
+    public boolean update(Persona p) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public persona SearchById(int id) {
+    public Persona SearchById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

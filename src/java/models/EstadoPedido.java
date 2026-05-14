@@ -6,7 +6,7 @@ package models;
 
 /**
  *
- * @author LAB 2
+ * @author Kevin VC
  */
 public enum EstadoPedido {
     

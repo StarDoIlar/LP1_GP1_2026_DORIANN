@@ -2,13 +2,13 @@
 package Interface;
 
 import java.util.List;
-import models.persona;
-import models.usuario;
+import models.Persona;
+import models.Usuario;
 
 public interface IPersona {
-    public List<persona> lista();
-    public int insertar(persona p, usuario u);
-    public boolean update(persona p);
-    public persona SearchById(int id);
+    public List<Persona> lista();
+    public int insertar(Persona p, Usuario u);
+    public boolean update(Persona p);
+    public Persona SearchById(int id);
     public void delete(int id);
 }
