@@ -13,6 +13,10 @@ public class TestProducto {
         TestProducto t = new TestProducto();
         t.listar();
         //t.insertar();
+        //t.update();
+        //t.updateStock();
+        //t.searchById();
+        //t.delete();
     }
     public static void listar() {
         List<Producto> lista = dao.lista();
@@ -42,5 +46,50 @@ public class TestProducto {
             System.out.println("Datos Incorrectos");
         }
     }
-    
+    public static void update() {
+        Producto p = new Producto();
+        p.setNombre("maiz");
+        p.setDescripcion("Selvatico");
+        p.setPrecio(1.50);
+        p.setStock(34);
+        p.setImagen("/resources/img/maiz.png");
+        p.setId_producto(3);
+        boolean result = dao.update(p);
+        if (result) {
+            System.out.println("Datos Correctos");
+        } else {
+            System.out.println("Datos Incorrectos");
+        }
+    }
+    public static void updateStock() {
+        Producto p = new Producto();
+        boolean result = dao.updateStock(3, 20);
+        if (result) {
+            System.out.println("Stock actualizado");
+        } else {
+            System.out.println("Datos Incorrectos");
+        }
+    }
+    public static void searchById() {
+        Producto pr = dao.searchById(3);
+        
+        if (pr !=null) {
+            System.out.println("id: " + pr.getId_producto());
+            System.out.println("nombre: " + pr.getNombre());
+            System.out.println("descripcion: " + pr.getDescripcion());
+            System.out.println("precio: " + pr.getPrecio());
+            System.out.println("stock: " + pr.getStock());
+        } else {
+            System.out.println("No hay Datos");
+        }
+    }
+    public static void delete() {
+        boolean result = dao.delete(4);
+        
+        if (result) {
+            System.out.println("Eliminado");
+        } else {
+            System.out.println("No se pudo eliminar");
+        }
+    }
 }
