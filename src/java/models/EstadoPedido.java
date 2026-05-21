@@ -9,5 +9,9 @@ package models;
  * @author Kevin VC
  */
 public enum EstadoPedido {
-    
+    PENDIENTE,
+    PROCESADO,
+    ENVIADO,
+    ENTREGADO,
+    CANCELADO
 }
