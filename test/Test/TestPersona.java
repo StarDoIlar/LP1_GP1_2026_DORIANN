@@ -19,18 +19,18 @@ public class TestPersona {
 
     public static void main(String[] args) {
         TestPersona t = new TestPersona();
-       // t.crear_usuario();
-       t.validate();
+       t.crear_usuario();
+       //t.validate();
     }
 
     public void crear_usuario() {
         Persona p = new Persona();
-        p.setNombre("Jhan Arly");
-        p.setEmail("jhan@gmail.com");
+        p.setNombre("Doriann Gonzales");
+        p.setEmail("stardollar09273@gmail.com");
         p.setDireccion("upeu");
         p.setTelefono("987654321");
         Usuario u = new Usuario();
-        u.setPassword("admin123");
+        u.setPassword("admin123star");
         int result = dao.insertar(p, u);
         if (result > 0) {
             System.out.println("Usuario" + p.getEmail());
@@ -41,7 +41,7 @@ public class TestPersona {
     }
     
     public void validate(){
-        Usuario u =Udao.validate("jhan@gmail.com", "admin123");
+        Usuario u =Udao.validate("dorianngonzales123@gmail.com", "dodoadmin123");
         if (u !=null && u.getPersona() !=null) {
             System.out.println("Bienvenido"+u.getPersona().getNombre());
             System.out.println("Rol"+ u.getRol());
