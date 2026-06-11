@@ -1,31 +1,160 @@
-
 package Controllers;
 
+import Dao.ProductoDaoImpl;
+import Interface.IProducto;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import models.Producto;
 
+@MultipartConfig
 @WebServlet(name = "ProductoController", urlPatterns = {"/ProductoController"})
 public class ProductoController extends HttpServlet {
 
+    private final IProducto pDao = new ProductoDaoImpl();
+    private final Gson gson = new Gson();
+    private static final String UPLOAD_DIR = "assets/img/productos";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ProductoController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ProductoController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            action = "listar";
         }
+        switch (action) {
+            case "guardar":
+                guardarProductos(request, response);
+                break;
+            case "editar":
+                editarProductos(request, response);
+                break;
+            case "eliminar":
+                eliminarProductos(request, response);
+                break;
+            case "buscar":
+                buscarProductos(request, response);
+                break;
+            default:
+                listarProductos(request, response);
+                break;
+        }
+    }
+
+    private void listarProductos(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        List<Producto> productos = pDao.lista();
+        response.getWriter().print(gson.toJson(productos));
+
+    }
+
+    private void guardarProductos(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        try {
+            Producto p = new Producto();
+            p.setNombre(request.getParameter("nombre"));
+            p.setDescripcion(request.getParameter("descripcion"));
+            p.setPrecio(Double.parseDouble(request.getParameter("precio")));
+            p.setStock(Integer.parseInt(request.getParameter("stock")));
+
+            Part part = request.getPart("imagen");
+            if (part != null && part.getSize() > 0) {
+                String fileName = part.getSubmittedFileName();
+                //obtener ls ruta donde guardar la imgh
+                String pathBuild = getServletContext().getRealPath("/")
+                        + "assets/img/productos" + File.separator;
+                System.out.println("Ruta Build: " + pathBuild);
+                String pathSource = pathBuild.replace("build" + File.separator + "web", "web");
+
+                if (pathSource.equals(pathBuild)) {
+                    System.out.println("colocar ruta fija");
+                }
+                System.out.println("Ruta Source: " + pathSource);
+                try {
+                    new File(pathSource).mkdirs();
+                    new File(pathBuild).mkdirs();
+
+                    File fileSource = new File(pathSource + fileName);
+                    try (InputStream input = part.getInputStream()) {
+                        java.nio.file.Files.copy(input, fileSource.toPath(),
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    System.out.println("Guardado en Source OK");
+
+                    part.write(pathBuild + fileName);
+                    System.out.println("Guardado en build OK");
+
+                } catch (Exception e) {
+                    System.err.println("Error critico" + e.getMessage());
+                    e.printStackTrace();
+                }
+                p.setImagen("assets/img/productos/" + fileName);
+
+            }
+            boolean res = pDao.insertar(p);
+            response.getWriter().print(gson.toJson(res));
+
+        } catch (Exception e) {
+            response.getWriter().print(gson.toJson(false));
+
+        }
+    }
+
+    private void editarProductos(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        Producto p = new Producto();
+        try {
+            p.setNombre(request.getParameter("nombre"));
+            p.setDescripcion(request.getParameter("descripcion"));
+            p.setPrecio(Double.parseDouble(request.getParameter("precio")));
+            p.setStock(Integer.parseInt(request.getParameter("stock")));
+            p.setId_producto(Integer.parseInt(request.getParameter("id_producto")));
+
+            Part part = request.getPart("imagen");
+
+            if (part != null && part.getSize() > 0) {
+                String fileName = part.getSubmittedFileName();
+                String uploadPath = getServletContext().getRealPath("")
+                        + File.separator + UPLOAD_DIR;
+                part.write(uploadPath + File.separator + fileName);
+                p.setImagen(UPLOAD_DIR + "/" + fileName);
+            } else {
+                p.setImagen(request.getParameter("imagen_actual"));
+            }
+            boolean res = pDao.update(p);
+            response.getWriter().print(gson.toJson(res));
+        } catch (Exception e) {
+            response.getWriter().print(gson.toJson(false));
+        }
+
+    }
+
+    private void eliminarProductos(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+         int id = Integer.parseInt(request.getParameter("id"));
+        boolean res = pDao.delete(id);
+        response.getWriter().print(gson.toJson(res));
+    }
+
+    private void buscarProductos(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Producto p = pDao.searchById(id);
+        response.getWriter().print(p);
     }
 
     @Override
