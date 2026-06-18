@@ -39,6 +39,7 @@ public class AppController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         JsonObject jsonResponse = new JsonObject();
+
         HttpSession session = request.getSession();
 
         List<Carrito> listCarrito = (List<Carrito>) session.getAttribute("carrito");
@@ -77,19 +78,20 @@ public class AppController extends HttpServlet {
                             listCarrito.add(car);
                         }
                         jsonResponse.addProperty("success", true);
-                        jsonResponse.addProperty("cartCout", listCarrito.size());
+                        jsonResponse.addProperty("cartCount", listCarrito.size());
                     }
                     out.print(jsonResponse.toString());
                     break;
+
                 case "listarCarrito":
                     double total = listCarrito.stream().mapToDouble(Carrito::getSubTotal).sum();
                     session.setAttribute("total", total);
-                    JsonObject carData = new JsonObject();
-
-                    carData.add("item", gson.toJsonTree(listCarrito));
-                    carData.addProperty("total", total);
-                    out.print(carData.toString());
+                    JsonObject cartData = new JsonObject();
+                    cartData.add("item", gson.toJsonTree(listCarrito));
+                    cartData.addProperty("total", total);
+                    out.print(cartData.toString());
                     break;
+
                 case "Delete":
                     try {
                         int idproducto = Integer.parseInt(request.getParameter("id"));
@@ -107,71 +109,69 @@ public class AppController extends HttpServlet {
                     break;
                 case "GenerarCompra":
                     Usuario user = (Usuario) session.getAttribute("usuario");
-                    //validar sesion
                     if (user == null) {
                         jsonResponse.addProperty("success", false);
-                        jsonResponse.addProperty("message", "Debe iniciar sesión");
+                        jsonResponse.addProperty("message", "Inicie Sesion");
                         out.print(jsonResponse.toString());
-                        return;
                     }
-                    //validar carrito vacio
                     if (listCarrito == null || listCarrito.isEmpty()) {
                         jsonResponse.addProperty("success", false);
-                        jsonResponse.addProperty("message", "Debe carrito esta vacio");
+                        jsonResponse.addProperty("message", "El carrito vacio");
+                        out.print(jsonResponse.toString());
+                    }
+
+                    boolean stockDiponible = true;
+                    String productoSinStock = "";
+
+                    for (Carrito c : listCarrito) {
+                        Producto prodBD = pDao.searchById(c.getIdProducto());
+                        if (prodBD.getStock() < c.getCantidad()) {
+                            stockDiponible = false;
+                            productoSinStock = prodBD.getNombre();
+                            break;
+                        }
+                    }
+                    if (!stockDiponible) {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message", "Stock insuficiente" + productoSinStock);
                         out.print(jsonResponse.toString());
                         return;
                     }
-                    //validdar stock
-                    boolean stockDisponible = true;
-                    String prodcutoSinStock = "";
-                    for (Carrito c : listCarrito) {
-                        Producto proDB = pDao.searchById(c.getIdProducto());
-                        if (proDB.getStock() < c.getCantidad()) {
-                            stockDisponible = false;
-                            prodcutoSinStock = proDB.getNombre();
-                            break;
-                        }
-                        if (!stockDisponible) {
-                            jsonResponse.addProperty("success", false);
-                            jsonResponse.addProperty("message", "Stock insuficiente" + prodcutoSinStock);
-                            out.print(jsonResponse.toString());
-                            return;
-                        }
-                        //preparar el pedido
-                        double totalPagar = listCarrito.stream().mapToDouble(Carrito::getSubTotal).sum();
-                        Pedido pedido = new Pedido();
-                        pedido.setPersona(user.getPersona());
-                        pedido.setTotal(totalPagar);
-                        pedido.setEstadopedido(EstadoPedido.ENVIADO);
-                        pedido.setDetallePedido(listCarrito);
-                        //guardar el pedido
-                        int idGenerado = IDao.generarPedido(pedido);
 
-                        if (idGenerado > 0) {
-                            for (Carrito c : listCarrito) {
-                                Producto prodBD = pDao.searchById(c.getIdProducto());
-                                int nuevoStock = prodBD.getStock() - c.getCantidad();
-                                pDao.updateStock(c.getIdProducto(), nuevoStock);
-                            }
-                            listCarrito.clear();
-                            session.setAttribute("carrito", listCarrito);
-                            session.setAttribute("total", 0.0);
-                            jsonResponse.addProperty("success", true);
-                            jsonResponse.addProperty("message", "Compra realizada con exito");
-                        } else {
-                            jsonResponse.addProperty("success", false);
-                            jsonResponse.addProperty("message", "Error al procesar el pedido");
+                    double totalPagar = listCarrito.stream().mapToDouble(Carrito::getSubTotal).sum();
+
+                    Pedido pedido = new Pedido();
+                    pedido.setPersona(user.getPersona());
+                    pedido.setTotal(totalPagar);
+                    pedido.setEstadopedido(EstadoPedido.ENVIADO);
+                    pedido.setDetallePedido(listCarrito);
+
+                    int idGenerado = IDao.generarPedido(pedido);
+                    if (idGenerado > 0) {
+                        for (Carrito c : listCarrito) {
+                            Producto prodBD = pDao.searchById(c.getIdProducto());
+                            int nuevoStock = prodBD.getStock() - c.getCantidad();
+                            pDao.updateStock(c.getIdProducto(), nuevoStock);
+
                         }
-                        out.print(jsonResponse.toString());
+                        listCarrito.clear();
+                        session.setAttribute("carrito", listCarrito);
+                        session.setAttribute("total", 0.0);
+                        jsonResponse.addProperty("success", true);
+                        jsonResponse.addProperty("message", "Compra exitosa !!!");
+                    } else {
+                        jsonResponse.addProperty("success", false);
+                        jsonResponse.addProperty("message", "Error al procesar el pedido");
                     }
+                    out.print(jsonResponse.toString());
+
                     break;
+
                 default:
                     jsonResponse.addProperty("success", false);
                     jsonResponse.addProperty("message", "accion no encontrada");
                     out.print(jsonResponse.toString());
             }
-        } catch (Exception e) {
-            System.out.println("error: " + e);
         }
 
     }
