@@ -1,14 +1,22 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Dao;
 
 import Interface.IProducto;
-import java.util.List;
-import models.Producto;
+import Model.Producto;
+import Util.ConexionSingleton;
 import java.sql.*;
 import java.util.ArrayList;
-import util.ConexionSingleton;
+import java.util.List;
 
-public class ProductoDaoImpl implements IProducto{
+/**
+ *
+ * @author LAB 2
+ */
+public class ProductoDaoImpl implements IProducto {
+
     private Connection cn;
     static PreparedStatement st;
     static ResultSet rs;
@@ -18,15 +26,15 @@ public class ProductoDaoImpl implements IProducto{
     public List<Producto> lista() {
         List<Producto> lista = null;
         Producto pr;
-        
+
         try {
-            query = "SELECT id_producto, nombre, descripcion, precio, stock, imagen "
-                    + "FROM productos";
+            query = " SELECT id_producto,nombre,descripcion,precio,"
+                    + " stock, imagen FROM productos; ";
             lista = new ArrayList<>();
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             rs = st.executeQuery();
-            while (rs.next()) {                
+            while (rs.next()) {
                 pr = new Producto();
                 pr.setId_producto(rs.getInt("id_producto"));
                 pr.setNombre(rs.getString("nombre"));
@@ -36,9 +44,9 @@ public class ProductoDaoImpl implements IProducto{
                 pr.setImagen(rs.getString("imagen"));
                 lista.add(pr);
             }
-            
+
         } catch (Exception e) {
-            System.out.println("Error al validar la lista" + e.getMessage());
+            System.out.println("Error al listar" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
@@ -59,9 +67,10 @@ public class ProductoDaoImpl implements IProducto{
     public boolean insertar(Producto pro) {
         boolean flag = false;
         try {
-            query = "INSERT INTO productos"
-                    + "(nombre, descripcion, precio, stock, imagen)"
-                    + "VALUES(?,?,?,?,?)";
+            query = " INSERT INTO productos "
+                    + "(nombre,descripcion,precio,stock,imagen) "
+                    + " VALUES(?,?,?,?,?)";
+
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             st.setString(1, pro.getNombre());
@@ -71,9 +80,9 @@ public class ProductoDaoImpl implements IProducto{
             st.setString(5, pro.getImagen());
             st.executeUpdate();
             flag = true;
-            
+
         } catch (Exception e) {
-            System.out.println("Error al validar el insert" + e.getMessage());
+            System.out.println("Error al listar" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
@@ -89,14 +98,16 @@ public class ProductoDaoImpl implements IProducto{
             }
         }
         return flag;
+
     }
 
     @Override
     public boolean update(Producto pro) {
         boolean flag = false;
         try {
-            query = "UPDATE productos SET nombre=?, descripcion=?, precio=?, "
-                    + "stock=?, imagen=? WHERE id_producto=?";
+            query = "UPDATE productos SET nombre=?,descripcion=?,precio=?,"
+                    + "stock=?,imagen=? WHERE id_producto=? ";
+
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             st.setString(1, pro.getNombre());
@@ -107,9 +118,9 @@ public class ProductoDaoImpl implements IProducto{
             st.setInt(6, pro.getId_producto());
             st.executeUpdate();
             flag = true;
-            
+
         } catch (Exception e) {
-            System.out.println("Error al validar update" + e.getMessage());
+            System.out.println("Error al listar" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
@@ -129,25 +140,25 @@ public class ProductoDaoImpl implements IProducto{
 
     @Override
     public Producto searchById(int id) {
-        Producto pr = null;
-        
+        Producto pr =null;
         try {
-            query = "SELECT * FROM productos WHERE id_producto=?";
+            query = " SELECT * FROM productos WHERE id_producto=?;";
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             st.setInt(1, id);
             rs = st.executeQuery();
-            if (rs.next()) {                
+            if (rs.next()) {
                 pr = new Producto();
                 pr.setId_producto(rs.getInt("id_producto"));
                 pr.setNombre(rs.getString("nombre"));
                 pr.setDescripcion(rs.getString("descripcion"));
                 pr.setPrecio(rs.getDouble("precio"));
                 pr.setStock(rs.getInt("stock"));
+                pr.setImagen(rs.getString("imagen"));
             }
-            
+
         } catch (Exception e) {
-            System.out.println("Error al validar el id" + e.getMessage());
+            System.out.println("Error al listar" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
@@ -163,21 +174,21 @@ public class ProductoDaoImpl implements IProducto{
         }
         return pr;
     }
-    
 
     @Override
     public boolean delete(int id) {
         boolean flag = false;
         try {
-            query = "DELETE FROM productos WHERE id_producto=?";
+            query = "DELETE FROM productos WHERE id_producto=? ";
+
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             st.setInt(1, id);
             st.executeUpdate();
             flag = true;
-            
+
         } catch (Exception e) {
-            System.out.println("Error al eliminar" + e.getMessage());
+            System.out.println("Error al actualizar stock" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
@@ -197,17 +208,17 @@ public class ProductoDaoImpl implements IProducto{
 
     @Override
     public boolean updateStock(int id, int stock) {
-        boolean flag = false;
+         boolean flag = false;
         try {
-            query = "UPDATE productos SET "
-                    + "stock=? WHERE id_producto=?";
+            query = "UPDATE productos SET stock=? WHERE id_producto=? ";
+
             cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
             st.setInt(1, stock);
             st.setInt(2, id);
             st.executeUpdate();
             flag = true;
-            
+
         } catch (Exception e) {
             System.out.println("Error al actualizar stock" + e.getMessage());
             try {
@@ -226,5 +237,5 @@ public class ProductoDaoImpl implements IProducto{
         }
         return flag;
     }
-    
+
 }

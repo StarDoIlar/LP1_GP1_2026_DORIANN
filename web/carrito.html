@@ -15,6 +15,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <h2 class="fw-bold text-secondary mb-4">
                 <i class="bi bi-cart-check me-2">Mi carrito de compras</i>
             </h2>
+            
             <div class="row">
                 <!-- Tabla de productos -->
                 <div class="col-lg-8">
@@ -34,7 +35,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                                 <tbody>
                                     <!<!-- Se llenara con el js -->
                                 </tbody>
+                                
                             </table>
+                            
                         </div>
                     </div>
                     <a href="index.html" class="btn btn-outline-info">
@@ -59,13 +62,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                                 <span class="fw-bold fs-5">Total</span>
                                 <span class="fw-bold fs-5 text-info" id="resumen-total">$0.00</span>
                             </div>
-                            <button class="btn btn-info text-white w-100 fw-bold py-2">
+                            <button onclick="procesarCompra()" class="btn btn-info text-white w-100 fw-bold py-2">
                                 FINALIZAR COMPRA
                             </button>
+                            
                         </div>
+                        
                     </div> 
+                    
+                    
                 </div>
+                
             </div>
+            
+            
+            
         </main>
         <footer id="footer-placeholder"></footer>
     </body>

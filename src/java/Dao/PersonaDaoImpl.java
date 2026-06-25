@@ -5,12 +5,12 @@
 package Dao;
 
 import Interface.IPersona;
-import models.Persona;
+import Model.Persona;
+import Model.Rol;
+import Model.Usuario;
+import Util.ConexionSingleton;
 import java.util.List;
 import java.sql.*;
-import models.Usuario;
-import models.rol;
-import util.ConexionSingleton;
 
 /**
  *
@@ -47,7 +47,7 @@ public class PersonaDaoImpl implements IPersona{
                       System.out.println("id_recuperado"+id_persona);
                   }
                   if (id_persona>0) {
-                      u.setRol(rol.CLIENTE);
+                      u.setRol(Rol.CLIENTE);
                       String hashedPassword= u.HashPassword(u.getPassword());
                       query = " INSERT INTO usuarios(usuario,password,rol,id_persona)"
                               + " VALUES(?,?,?,?)";

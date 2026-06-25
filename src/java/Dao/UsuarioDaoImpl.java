@@ -5,11 +5,11 @@
 package Dao;
 
 import Interface.IUsuario;
-import models.Persona;
+import Model.Persona;
+import Model.Rol;
+import Model.Usuario;
+import Util.ConexionSingleton;
 import java.sql.*;
-import models.Usuario;
-import models.rol;
-import util.ConexionSingleton;
 
 /**
  *
@@ -47,7 +47,7 @@ public class UsuarioDaoImpl implements IUsuario {
                 u = new Usuario();
                 u.setId_usuario(rs.getInt("id_usuario"));
                 u.setUsuario(rs.getString("usuario"));
-                u.setRol(rol.valueOf(rs.getString("rol").toUpperCase()));
+                u.setRol(Rol.valueOf(rs.getString("rol").toUpperCase()));
                 p.setId_persona(rs.getInt("id_persona"));
                 p.setNombre(rs.getString("nombre"));
                 u.setPersona(p);
@@ -69,6 +69,7 @@ public class UsuarioDaoImpl implements IUsuario {
             }
         }
         return u;
+        
 
     }
 
