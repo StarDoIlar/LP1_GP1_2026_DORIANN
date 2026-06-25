@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-shop me-2"></i>VC-PRO</a>
+        <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-shop me-2"></i>SITE-PRO</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -48,3 +48,67 @@
         </div>
     </div>
 </nav>
+<!-- MODAL LOGIN -->
+<div class="modal fade" id="modalLogin" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Iniciar Sesión</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-login">
+                    <div class="mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" name="usuario" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-info text-white w-100">Entrar</button>
+                </form>
+                <p class="text-center mt-3 small">¿No tienes cuenta? <a href="#" data-bs-toggle="modal" data-bs-target="#modalRegister">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL REGISTER -->
+<div class="modal fade" id="modalRegister" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Crear Cuenta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-register">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" name="usuario" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                        <label class="form-label">Telefono</label>
+                        <input type="text" name="telefono" class="form-control" required>
+                    </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Direccion</label>
+                        <textarea name="direccion" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-info text-white w-100">Entrar</button>
+                </form>
+                <p class="text-center mt-3 small">¿Ya tienes cuenta? <a href="#" data-bs-toggle="modal" data-bs-target="#modalRegister">Iniciar Sesión</a></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -35,6 +35,27 @@ async function init(){
         await loadScript('assets/js/bootstrap.bundle.min.js');
         await loadScript('https://cdn.jsdelivr.net/npm/sweetalert2@11');
         
+        //cargar los script y funciones
+        await loadScript('assets/js/tienda.js');
+        setTimeout(()=>{
+            if (typeof verificarSesion() === 'function')
+                verificarSesion();
+            if (typeof cargarProductos()==='function')
+                cargarProductos();
+            if (typeof inicializarEventosAuth() === 'function')
+                inicializarEventosAuth();
+            if (typeof cargarCarrito === 'function')
+                cargarCarrito();
+            if (typeof actualizarContadorCarrito()==='function')
+                actualizarContadorCarrito();
+            if (typeof cargarCarrito() === 'function')
+                cargarCarrito();
+            if (typeof  cargarTablaAdmin === 'function') {
+                cargarTablaAdmin();                
+            }
+            
+        },200);
+        
     } catch (e) {
         console.error("Error al cargar la aplicacion",e); 
     }
